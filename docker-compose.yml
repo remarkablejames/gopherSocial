@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: gophersocial_db
+    ports:
+      - "5436:5432" # Map local port 5436 to container port 5432
+    environment:
+      POSTGRES_USER: gopheruser
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: gophersocial
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persist database data
+
+volumes:
+  postgres_data:
