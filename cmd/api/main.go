@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/joho/godotenv"
 	"gopherSocial/internal/db"
 	"gopherSocial/internal/env"
@@ -31,7 +32,12 @@ func main() {
 		log.Panic(err)
 	}
 
-	defer database.Close()
+	defer func(database *sql.DB) {
+		err := database.Close()
+		if err != nil {
+			log.Panic(err)
+		}
+	}(database)
 	log.Println("DATABASE CONNECTION POOL ESTABLISHED")
 	s := store.NewStorage(database)
 

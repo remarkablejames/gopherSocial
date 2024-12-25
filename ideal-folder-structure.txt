@@ -1,0 +1,33 @@
+project-root/
+├── cmd/
+│   └── app/                 # Entry point of the application (main package)
+│       └── main.go
+├── internal/                # Application-specific code
+│   ├── domain/              # Core business entities and interfaces
+│   │   ├── posts.go         # Post domain model (business rules)
+│   │   ├── users.go         # User domain model
+│   │   └── ...
+│   ├── usecase/             # Application business logic (Use Cases)
+│   │   ├── post_usecase.go  # Use case logic for posts
+│   │   ├── user_usecase.go  # Use case logic for users
+│   │   └── ...
+│   ├── adapters/            # Adapters to interact with external services
+│   │   ├── db/              # Database implementation (e.g., SQL, Gorm)
+│   │   │   ├── posts_repo.go  # PostRepository interface implementation
+│   │   │   ├── users_repo.go  # UserRepository interface implementation
+│   │   │   └── ...
+│   │   └── api/             # HTTP handlers (controllers)
+│   │       ├── posts_handler.go
+│   │       ├── users_handler.go
+│   │       └── ...
+│   └── config/              # Configuration files and utilities
+│       └── config.go
+├── pkg/                     # Shared reusable code across projects
+│   ├── logger/              # Logging utilities
+│   ├── middleware/          # HTTP middleware
+│   └── ...
+├── migrations/              # Database migration scripts
+├── third_party/             # Code from third-party libraries (if needed)
+├── go.mod                   # Go module file
+├── go.sum                   # Dependency checksum file
+└── README.md                # Project documentation
