@@ -21,7 +21,7 @@ func (s UsersStore) Create(ctx context.Context, user *User) error {
 
 	query := `INSERT INTO users (username,password,email) VALUES($1,$2,$3) RETURNING id,created_at`
 
-	err := s.db.QueryRowContext(ctx, query, user.Username, user.Email, user.Password).Scan(&user.ID, &user.CreatedAt)
+	err := s.db.QueryRowContext(ctx, query, user.Username, user.Password, user.Email).Scan(&user.ID, &user.CreatedAt)
 
 	if err != nil {
 		return err
