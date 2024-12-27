@@ -10,8 +10,8 @@ import (
 )
 
 type CreatePostInput struct {
-	Title   string   `json:"title"`
-	Content string   `json:"content"`
+	Title   string   `json:"title" validate:"required,max=100"`
+	Content string   `json:"content" validate:"required,max=1000"`
 	Tags    []string `json:"tags"`
 }
 
@@ -19,11 +19,11 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 	var inputPost CreatePostInput
 
 	if err := ReadJSON(w, r, &inputPost); err != nil {
-		err := WriteJSONError(w, http.StatusBadRequest, err.Error())
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
+		app.badRequestResponse(w, r, err)
+		return
+	}
+	if err := Validate.Struct(inputPost); err != nil {
+		app.badRequestResponse(w, r, err)
 		return
 	}
 	userId := 2
@@ -36,11 +36,7 @@ func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request
 	}
 	ctx := r.Context()
 	if err := app.store.Posts.Create(ctx, post); err != nil {
-		err := WriteJSONError(w, http.StatusInternalServerError, err.Error())
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
+		app.internalServerError(w, r, err)
 		return
 	}
 
@@ -55,19 +51,11 @@ func (app *application) getPostHandler(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "postID")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
-		err := WriteJSONError(w, http.StatusInternalServerError, err.Error())
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
+		app.internalServerError(w, r, err)
 	}
 	post, err := app.store.Posts.GetByID(r.Context(), id)
 	if err != nil {
-		err := WriteJSONError(w, http.StatusNotFound, err.Error())
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
+		app.notFoundResponse(w, r)
 		return
 	}
 
