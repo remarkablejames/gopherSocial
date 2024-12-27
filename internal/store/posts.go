@@ -19,6 +19,7 @@ type Post struct {
 	Tags      []string `json:"tags"`
 	CreatedAt string   `json:"created_at"`
 	UpdatedAt string   `json:"updated_at"`
+	Comments  []*Comment
 }
 
 func (s postsStore) Create(ctx context.Context, post *Post) error {

@@ -6,7 +6,7 @@ import (
 )
 
 func (app *application) internalServerError(w http.ResponseWriter, r *http.Request, err error) {
-	log.Printf("INTERNAL SERVER ERROR: %s %s %s", r.RemoteAddr, r.Method, r.URL)
+	log.Printf("\033[31mINTERNAL SERVER ERROR:\033[0m \033[1m%s\033[0m %s %s %s", err.Error()+" | ", r.RemoteAddr, r.Method, r.URL)
 	err = WriteJSONError(w, http.StatusInternalServerError, "the server encountered an error and could not process the request")
 	if err != nil {
 		log.Fatal(err)
