@@ -13,6 +13,8 @@ type Storage struct {
 		Create(ctx context.Context, post *Post) error
 		Get(ctx context.Context, id int64) (*Post, error)
 		GetByID(ctx context.Context, id int64) (*Post, error)
+		Delete(ctx context.Context, id int64) error
+		Update(ctx context.Context, post *Post) error
 	}
 
 	Users interface {

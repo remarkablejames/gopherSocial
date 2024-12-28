@@ -35,3 +35,13 @@ func WriteJSONError(w http.ResponseWriter, status int, message string) error {
 	w.WriteHeader(status)
 	return json.NewEncoder(w).Encode(&envelope{Error: message})
 }
+
+func (app *application) jsonResponse(w http.ResponseWriter, r *http.Request, data interface{}, status int) {
+	type envelope struct {
+		Data interface{} `json:"data"`
+	}
+
+	if err := WriteJSON(w, status, &envelope{Data: data}); err != nil {
+		app.internalServerError(w, r, err)
+	}
+}
