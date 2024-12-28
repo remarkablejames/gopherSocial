@@ -17,6 +17,8 @@ type CommentStore struct {
 }
 
 func (s CommentStore) Create(ctx context.Context, comment *Comment) error {
+	ctx, cancel := context.WithTimeout(ctx, queryTimeoutDuration)
+	defer cancel()
 	query := `INSERT INTO comments (content,post_id,user_id)
 	VALUES($1, $2, $3) RETURNING id`
 
@@ -29,6 +31,8 @@ func (s CommentStore) Create(ctx context.Context, comment *Comment) error {
 }
 
 func (s CommentStore) GetPostByID(ctx context.Context, id int64) ([]*Comment, error) {
+	ctx, cancel := context.WithTimeout(ctx, queryTimeoutDuration)
+	defer cancel()
 	query := `SELECT c.id, c.content, c.post_id, c.user_id FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id=$1 ORDER BY c.id DESC`
 	rows, err := s.db.QueryContext(ctx, query, id)
 	if err != nil {
