@@ -8,6 +8,7 @@ import (
 	"gopherSocial/internal/env"
 	"gopherSocial/internal/store"
 	"log"
+	"time"
 )
 
 func main() {
@@ -19,12 +20,15 @@ func main() {
 	}
 
 	cfg := config{
-		addr: env.GetString("ADDR", ":8083"),
+		addr: env.GetString("ADDR", ":8081"),
 		db: dbConfig{
 			addr:         env.GetString("DB_ADDR", "postgres://gopheruser:123@localhost:5436/gophersocial?sslmode=disable"),
 			maxOpenConns: 30, // ideally you should get this value from environment variables
 			maxIdleConns: 30,
 			maxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
+		},
+		mail: mailConfig{
+			exp: time.Hour * 24 * 3,
 		},
 	}
 

@@ -19,6 +19,22 @@ func (app *application) getUserHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (app *application) activateUserHandler(w http.ResponseWriter, r *http.Request) {
+	token := chi.URLParam(r, "token")
+	err := app.store.Users.Activate(r.Context(), token)
+	if err != nil {
+		switch err {
+		case store.ErrRecordNotFound:
+			app.badRequestResponse(w, r, err)
+		default:
+			app.internalServerError(w, r, err)
+		}
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func (app *application) followUserHandler(w http.ResponseWriter, r *http.Request) {
 	user := getUserFromContext(r)
 	followerUserId := user.ID
