@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"go.uber.org/zap"
 	"gopherSocial/internal/store"
 	"log"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 type application struct {
 	config config
 	store  store.Storage
+	logger *zap.SugaredLogger
 }
 
 type config struct {
@@ -86,6 +88,7 @@ func (app *application) run(mux http.Handler) error {
 	}
 
 	log.Printf("Server has started at %s", app.config.addr)
+	app.logger.Infow("Server has started", "addr", app.config.addr)
 
 	return srv.ListenAndServe()
 }

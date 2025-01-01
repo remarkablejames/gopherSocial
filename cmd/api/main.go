@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"github.com/joho/godotenv"
+	"go.uber.org/zap"
 	"gopherSocial/internal/db"
 	"gopherSocial/internal/env"
 	"gopherSocial/internal/store"
@@ -27,6 +28,10 @@ func main() {
 		},
 	}
 
+	//Logger
+	logger := zap.Must(zap.NewProduction()).Sugar()
+	defer logger.Sync()
+	// Open a new connection to the database
 	database, err := db.New(cfg.db.addr, cfg.db.maxOpenConns, cfg.db.maxIdleConns, cfg.db.maxIdleTime)
 	if err != nil {
 		log.Panic(err)
@@ -38,14 +43,15 @@ func main() {
 			log.Panic(err)
 		}
 	}(database)
-	log.Println("DATABASE CONNECTION POOL ESTABLISHED")
+	logger.Info("DATABASE CONNECTION POOL ESTABLISHED")
 	s := store.NewStorage(database)
 
 	app := &application{
 		config: cfg,
 		store:  s,
+		logger: logger,
 	}
 
 	mux := app.mount()
-	log.Fatal(app.run(mux))
+	logger.Fatal(app.run(mux))
 }
